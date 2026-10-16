@@ -1,6 +1,5 @@
 import mongodb from "../database/index.mts";
 import type {Product, FindProductObj} from "./types.mts";
-import { formatFields } from "../services/utils.mts";
 import type { Collection } from "mongodb";
 
 export async function getAllProducts(find:FindProductObj) {
@@ -9,7 +8,7 @@ export async function getAllProducts(find:FindProductObj) {
       // get the total number of records matching our query
       const totalCount = await productsCollection.countDocuments(find.search);
     // apply the filters to get the matching records
-      const cursor = await productsCollection.find(find.search).skip(find.offset).limit(find.limit);
+      const cursor = productsCollection.find(find.search).skip(find.offset).limit(find.limit);
     // if fields were specified then reduce the results to just the required fields
       if(find.fieldFilters) {
         cursor.project(find.fieldFilters);
@@ -29,4 +28,3 @@ export default {
     getAllProducts,
     getProductById
 };
-

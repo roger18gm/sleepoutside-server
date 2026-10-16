@@ -1,3 +1,5 @@
+import type { Filter } from "mongodb";
+
 // Product schema
 
 type Projection<T> = {
@@ -5,11 +7,7 @@ type Projection<T> = {
 };
 
 export interface FindProductObj {
-  search: {
-    name?: string,
-    descriptionHtmlSimple?: string,
-    category?: string,
-  };
+  search: Filter<Product>;
   limit: number,
   offset: number,
   fieldFilters?: Projection<Product>

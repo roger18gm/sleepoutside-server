@@ -12,7 +12,7 @@ import {buildPaginationWrapper, formatFields} from './utils.mts'
     
   find.fieldFilters = fields? formatFields(fields): undefined;
   if(category) {
-      find.search.category = category;
+      find.search.category = category as Product["category"];
   }
   if(q) {
       find.search.name = q;

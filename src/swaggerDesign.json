@@ -6,7 +6,7 @@
   },
   "servers": [
     {
-      "url": "http://localhost:3000/"
+      "url": "http://localhost:3000/api/v1"
     }
   ],
   "components": {
@@ -270,12 +270,17 @@
           "userId": {
             "type": "string"
           },
-          "name":{
+          "name": {
             "type": "string"
           },
           "status": {
             "type": "string",
-            "enum":["pending", "processing", "shipped", "delivered"],
+            "enum": [
+              "pending",
+              "processing",
+              "shipped",
+              "delivered"
+            ],
             "description": "The status of the order, must be one of pending, processing, shipped or delivered"
           },
           "cardNumber": {
@@ -387,12 +392,13 @@
                 "pattern": "^\\w+$",
                 "description": "The country of the user, must not be blank and must be a valid country"
               }
-            }},
+            }
+          },
           "orderItems": {
             "type": "array",
             "items": {
               "type": "object",
-               "$ref": "#/components/schemas/CartItem"
+              "$ref": "#/components/schemas/CartItem"
             }
           }
         },
@@ -406,7 +412,6 @@
           "items"
         ]
       },
-      
       "OrderUpdateRequest": {
         "type": "object",
         "properties": {
@@ -486,51 +491,51 @@
       "CartItem": {
         "type": "object",
         "properties": {
-            "productId": {
-              "type": "string"
-            },
-            "productName": {
-              "type": "string"
-            },
-            "price": {
-              "type": "number"
-            },
-            "finalPrice": {
-              "type": "number"
-            },
-            "productImageSrc": {
-              "type": "string"
-            },
-            "productUrl": {
-              "type": "string"
-            },
-            "productCategory": {
-              "type": "string"
-            },
-            "productColor": {
-              "type": "object",
-              "properties": {
-                "colorCode": {
-                  "type": "string"
-                }
-              },
-              "required": [
-                "colorCode"
-              ]
-            },
-            "productSize": {
-              "type": "string"
-            }
+          "productId": {
+            "type": "string"
           },
-          "required": [
-            "productId",
-            "productName",
-            "price",
-            "finalPrice",
-            "productImageSrc",
-            "productUrl",
-            "productCategory"
-          ]
+          "productName": {
+            "type": "string"
+          },
+          "price": {
+            "type": "number"
+          },
+          "finalPrice": {
+            "type": "number"
+          },
+          "productImageSrc": {
+            "type": "string"
+          },
+          "productUrl": {
+            "type": "string"
+          },
+          "productCategory": {
+            "type": "string"
+          },
+          "productColor": {
+            "type": "object",
+            "properties": {
+              "colorCode": {
+                "type": "string"
+              }
+            },
+            "required": [
+              "colorCode"
+            ]
+          },
+          "productSize": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "productId",
+          "productName",
+          "price",
+          "finalPrice",
+          "productImageSrc",
+          "productUrl",
+          "productCategory"
+        ]
       },
       "User": {
         "type": "object",
@@ -671,7 +676,7 @@
             "type": "array",
             "items": {
               "type": "object",
-               "$ref": "#/components/schemas/CartItem"
+              "$ref": "#/components/schemas/CartItem"
             }
           },
           "createdAt": {
