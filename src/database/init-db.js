@@ -1,6 +1,7 @@
 // import MongoClient and ServerApiVersion from the mongodb library and import products from the products.js file.
 import { MongoClient, ServerApiVersion } from "mongodb";
 import { products } from "./products.js";
+import * as argon2 from "argon2";
 
 //build the uri for our connection string
 const uri = process.env.MONGO_URI || "";
@@ -23,7 +24,27 @@ const init = async () => {
     const db = client.db(process.env.MONGO_DATABASE);
 
     // initialize the Products collection
+    const hashedPassword = await argon2.hash("password");
+    const user = {
+      name: "John Doe",
+      email: "test-email@email.com",
+      passwordHash: hashedPassword,
+      createdAt: new Date(),
+      updatedAt: new Date(),
+    };
+
     await seedProducts(db);
+    await seedCollection(db, "alerts", []);
+    await seedCollection(db, "orders", []);
+    await seedCollection(db, "users", [user]);
+
+    await db.collection("products").createIndex({ name: 1 });
+    await db.collection("products").createIndex({ description: 1 });
+    await db.collection("products").createIndex({ category: 1 });
+    await db.collection("products").createIndex({ id: 1 });
+    await db.collection("users").createIndex({ name: 1 });
+    await db.collection("users").createIndex({ email: 1 });
+
   } catch (error) {
     console.error(error.message);
   } finally {
@@ -59,6 +80,26 @@ const lowerCaseKeys = function (obj) {
   }
   return obj;
 };
+
+const seedCollection = async (db, collectionName, data) => {
+  try {
+    // drop the collection to clear out the old records (skipped on the first run when it doesn't exist yet)
+    const existing = await db.listCollections({ name: collectionName }).toArray();
+    if (existing.length) {
+      await db.collection(collectionName).drop();
+      console.log(`Collection '${collectionName}' dropped successfully`);
+    }
+
+    // create a new collection
+    await db.createCollection(collectionName);
+    console.log(`Collection '${collectionName}' created successfully`);
+
+    const result = await db.collection(collectionName).insertMany(data);
+
+  } catch (error) {
+    console.error(error.message);
+  }
+}
 
 const seedProducts = async (db) => {
   // we need to make a small transform to the provided data before inserting
