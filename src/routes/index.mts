@@ -1,6 +1,7 @@
 import { Router } from "express";
 import productRoutes from "./product.routes.mts";
 import swaggerRoutes from "./swagger.routes.mts";
+import userRoutes from "./user.routes.mts";
 
 const router: Router = Router();
 
@@ -14,5 +15,7 @@ router.use("/products", productRoutes);
 
 // load swagger routes
 router.use("/api-docs", swaggerRoutes);
+
+router.use("/users", userRoutes);
 
 export default router;

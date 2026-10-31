@@ -83,7 +83,7 @@ export interface Brand {
 export interface User {
   _id?: string;
   email: string;
-  password: string;
+  passwordHash: string;
   name: string;
   address?: Address;
   phoneNumbers?: PhoneNumber[];
