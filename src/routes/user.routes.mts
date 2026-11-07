@@ -4,6 +4,7 @@ import UserService from "../services/user.service.mts"
 import { sanitize } from "../services/utils.mts";
 import userService from "../services/user.service.mts";
 import authorize from "../middleware/authorize.mts";
+import wishlistService from "../services/wishlist.service.mts";
 
 const router: Router = Router();
 
@@ -53,6 +54,69 @@ router.post('/users', async (req, res, next) => {
 router.get('/protected', authorize, (req, res) => {
     console.log(res.locals.user)
     res.json({ message: `Hello, ${res.locals.user.email}!` });
+});
+
+const authorizeUser = (req: any, res: any, next: any) => {
+    const authenticatedUserId = res.locals.user?._id?.toString();
+    if (!authenticatedUserId || authenticatedUserId !== req.params.userId) {
+        return res.status(403).json({ message: "Forbidden" });
+    }
+    next();
+};
+
+router.get('/:userId/wishlist', authorize, authorizeUser, async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        if (!userId) {
+            res.status(400).json({ message: "userId is required" });
+            return;
+        }
+        const wishlist = await wishlistService.getWishlist(userId);
+        res.status(200).json(wishlist);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.post('/:userId/wishlist', authorize, authorizeUser, async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        if (!userId) {
+            res.status(400).json({ message: "userId is required" });
+            return;
+        }
+        const { productId } = sanitize(req.body);
+        if (typeof productId !== "string" || !productId.trim()) {
+            res.status(400).json({ message: "productId is required" });
+            return;
+        }
+
+        const wishlist = await wishlistService.addProduct(userId, productId);
+        res.status(200).json(wishlist);
+    } catch (error) {
+        next(error);
+    }
+});
+
+router.delete('/:userId/wishlist/:productId', authorize, authorizeUser, async (req, res, next) => {
+    try {
+        const userId = req.params.userId;
+        const productId = req.params.productId;
+        if (!userId || !productId) {
+            res.status(400).json({ message: "userId and productId are required" });
+            return;
+        }
+        const wishlist = await wishlistService.removeProduct(
+            userId,
+            productId,
+        );
+        res.status(200).json(wishlist ?? {
+            userId,
+            productIds: [],
+        });
+    } catch (error) {
+        next(error);
+    }
 });
 
 export default router;

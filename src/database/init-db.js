@@ -37,6 +37,7 @@ const init = async () => {
     await seedCollection(db, "alerts", []);
     await seedCollection(db, "orders", []);
     await seedCollection(db, "users", [user]);
+    await seedCollection(db, "wishlists", []);
 
     await db.collection("products").createIndex({ name: 1 });
     await db.collection("products").createIndex({ description: 1 });
@@ -44,6 +45,7 @@ const init = async () => {
     await db.collection("products").createIndex({ id: 1 });
     await db.collection("users").createIndex({ name: 1 });
     await db.collection("users").createIndex({ email: 1 });
+    await db.collection("wishlists").createIndex({ userId: 1 }, { unique: true });
 
   } catch (error) {
     console.error(error.message);
